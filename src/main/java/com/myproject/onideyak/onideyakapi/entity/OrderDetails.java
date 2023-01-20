@@ -12,7 +12,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 public class OrderDetails {
-
     @Id
     @Column(name = "property_id", length = 200)
     private String propertyId;

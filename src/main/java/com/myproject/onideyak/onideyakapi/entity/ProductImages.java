@@ -14,10 +14,11 @@ public class ProductImages {
     @Id
     @Column(name = "property_id", length = 255)
     private String propertyId;
+
     @Embedded
     private FileResource resource;
+
     @ManyToOne
     private Product product;
-
 
 }

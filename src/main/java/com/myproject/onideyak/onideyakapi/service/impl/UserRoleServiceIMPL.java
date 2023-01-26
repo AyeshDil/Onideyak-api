@@ -43,7 +43,7 @@ public class UserRoleServiceIMPL implements UserRoleService {
         List<User> admins = userRepo.findUserByUserRole("UR-1");
         if (admins.isEmpty()){
             User user = new User(
-                    "",
+                    "generated id",
                     "011",
                     new UserNameResource("Ayesh", "Dilshan"),
                     "dilshanwma@gmail.com",

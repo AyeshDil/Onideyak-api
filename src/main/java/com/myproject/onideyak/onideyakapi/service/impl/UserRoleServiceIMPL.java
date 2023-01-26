@@ -40,7 +40,7 @@ public class UserRoleServiceIMPL implements UserRoleService {
 
         // save default user (Must be a ADMIN)
 
-        List<User> admins = userRepo.findUserByUserRole("UR-1");
+        List<User> admins = userRepo.findUserByUserRole(adminRole);
         if (admins.isEmpty()){
             User user = new User(
                     "generated id",

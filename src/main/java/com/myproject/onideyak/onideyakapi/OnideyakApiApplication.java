@@ -1,7 +1,6 @@
 package com.myproject.onideyak.onideyakapi;
 
-import com.myproject.onideyak.onideyakapi.entity.UserRole;
-import com.myproject.onideyak.onideyakapi.repo.UserRoleRepo;
+
 import com.myproject.onideyak.onideyakapi.service.UserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

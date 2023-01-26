@@ -57,5 +57,10 @@ public class User {
 
     @OneToMany(mappedBy = "userPropertyId", cascade = CascadeType.ALL)
     private Set<LovedProperty> lovedProperties;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private UserRole userRole;
+
 }
 

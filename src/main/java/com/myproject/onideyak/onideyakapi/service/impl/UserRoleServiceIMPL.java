@@ -58,6 +58,7 @@ public class UserRoleServiceIMPL implements UserRoleService {
                     null,
                     adminRole
             );
+            userRepo.save(user);
         }
 
 

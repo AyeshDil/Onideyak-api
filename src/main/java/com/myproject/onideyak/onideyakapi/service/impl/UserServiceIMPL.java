@@ -48,13 +48,18 @@ public class UserServiceIMPL implements UserService {
 
         String body= "<h1>Verification Code = "+ verificationCode +"</h1>";
 
-        boolean isSaved = emailService.sendEmail(
+        boolean isVerified = emailService.sendEmail(
                 userRequestDTO.getEmail(),
                 "Regarding Logging",
                 body
                 );
 
-        // save user
-        return null;
+        if (isVerified){
+            // save user
+
+            return new CommonResponseDTO(200,"Saved",null);
+        } else {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

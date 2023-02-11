@@ -18,7 +18,8 @@ import java.util.Set;
 @Data
 public class UserRequestDTO {
     private String contactNumber;
-    private UserNameResource userName;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
 }

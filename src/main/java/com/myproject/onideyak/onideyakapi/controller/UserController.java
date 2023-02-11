@@ -5,11 +5,9 @@ import com.myproject.onideyak.onideyakapi.dto.response.CommonResponseDTO;
 import com.myproject.onideyak.onideyakapi.service.UserService;
 import com.myproject.onideyak.onideyakapi.util.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 
@@ -26,8 +24,33 @@ public class UserController {
 
     @PostMapping("/visitor/register")
     public ResponseEntity<StandardResponse> createUser(@RequestBody UserRequestDTO userRequestDTO) throws MessagingException {
-       CommonResponseDTO commonResponseDTO = userService.createUser(userRequestDTO);
-       return null;
+        CommonResponseDTO commonResponseDTO = userService.createUser(userRequestDTO);
+        return new ResponseEntity<>(
+                new StandardResponse(
+                        commonResponseDTO.getCode(),
+                        commonResponseDTO.getMessage(),
+                        commonResponseDTO.getData()
+                ), HttpStatus.CREATED
+        );
+    }
+
+    @PostMapping(
+            value = {"visitor/verify/{otp}"},
+            params = {"email"}
+    )
+    public ResponseEntity<StandardResponse> verifyUser(
+            @PathVariable(value = "otp") String otp,
+            @RequestParam String email
+    ) {
+        CommonResponseDTO commonResponseDTO = userService.verifyUser(otp, email);
+        return new ResponseEntity<>(
+                new StandardResponse(
+                        commonResponseDTO.getCode(),
+                        commonResponseDTO.getMessage(),
+                        commonResponseDTO.getData()
+                ), HttpStatus.CREATED
+
+        );
     }
 
 }

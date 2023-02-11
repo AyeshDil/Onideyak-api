@@ -49,6 +49,9 @@ public class User {
     @Column(name = "prefix", length = 16)
     private String prefix;
 
+    @Column(name = "otp", length = 6)
+    private String otp;
+
     @Embedded
     private FileResource avatar;
 

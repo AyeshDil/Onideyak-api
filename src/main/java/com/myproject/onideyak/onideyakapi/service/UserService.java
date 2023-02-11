@@ -7,4 +7,6 @@ import javax.mail.MessagingException;
 
 public interface UserService {
     CommonResponseDTO createUser(UserRequestDTO userRequestDTO) throws MessagingException;
+
+    CommonResponseDTO verifyUser(String otp, String email);
 }

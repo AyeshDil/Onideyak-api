@@ -145,17 +145,32 @@ public class UserServiceIMPL implements UserService {
     }
 
     @Override
-    public CommonResponseDTO forgotPassword(String email) {
+    public CommonResponseDTO forgotPassword(String email) throws MessagingException {
         // find user email in db
         Optional<User> selectedUser = userRepo.findByEmailEquals(email);
 
-        if (selectedUser.isPresent()) {
+        if (selectedUser.isEmpty()) {
+            throw new NotFoundException("Wrong Email");
+        }
+
+        String verificationCode = generator.generateVerificationCode();
+
+        // Email body
+        String body = "<h1>Verification Code = " + verificationCode + "</h1>";
+
+        boolean isSendEmail = emailService.sendEmail(
+                email,
+                "Regarding Logging",
+                body
+        );
+        if (isSendEmail){
             // save new otp
-            selectedUser.get().setOtp(generator.generateVerificationCode());
+            selectedUser.get().setOtp(verificationCode);
             userRepo.save(selectedUser.get());
             return new CommonResponseDTO(307, "otp sent", "localhost:8000/api/v1/users/visitor/restart-password/{otp}");
         }
-        throw new NotFoundException("Wrong Email");
+        throw new ServerErrorException(email + " not saved! Internal Server Error");
+
     }
 
     @Override
@@ -166,6 +181,7 @@ public class UserServiceIMPL implements UserService {
         if (selectedUser.get().getOtp().equals(otp)) {
             // change password
             selectedUser.get().setPassword(newPassword);
+            selectedUser.get().setOtp(null);
             userRepo.save(selectedUser.get());
             return new CommonResponseDTO(308, "Logging to account by using new password", null);
         }

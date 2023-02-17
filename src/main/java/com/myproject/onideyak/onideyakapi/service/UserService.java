@@ -15,5 +15,5 @@ public interface UserService {
 
     CommonResponseDTO restartPassword(String email, String otp, String newPassword);
 
-    CommonResponseDTO forgotPassword(String email);
+    CommonResponseDTO forgotPassword(String email) throws MessagingException;
 }

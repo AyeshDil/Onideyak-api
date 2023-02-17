@@ -69,7 +69,7 @@ public class UserController {
 
     @PutMapping(value = {"/visitor/forgot-password"},
     params = {"email"})
-    public ResponseEntity<StandardResponse> forgotPassword(@RequestParam(value = "email") String email){
+    public ResponseEntity<StandardResponse> forgotPassword(@RequestParam(value = "email") String email) throws MessagingException {
         CommonResponseDTO commonResponseDTO = userService.forgotPassword(email);
         return new ResponseEntity<>(
                 new StandardResponse(

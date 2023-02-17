@@ -5,4 +5,6 @@ import com.myproject.onideyak.onideyakapi.dto.response.CommonResponseDTO;
 
 public interface ProductService {
     CommonResponseDTO createNewProduct(ProductRequestDTO productRequestDTO);
+
+    CommonResponseDTO getProduct(String id);
 }

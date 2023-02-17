@@ -5,6 +5,9 @@ import com.myproject.onideyak.onideyakapi.dto.response.CommonResponseDTO;
 import com.myproject.onideyak.onideyakapi.entity.User;
 import com.myproject.onideyak.onideyakapi.entity.UserRole;
 import com.myproject.onideyak.onideyakapi.entity.share.UserNameResource;
+import com.myproject.onideyak.onideyakapi.exception.ConflictException;
+import com.myproject.onideyak.onideyakapi.exception.ServerErrorException;
+import com.myproject.onideyak.onideyakapi.exception.UnauthorizedException;
 import com.myproject.onideyak.onideyakapi.repo.UserRepo;
 import com.myproject.onideyak.onideyakapi.repo.UserRoleRepo;
 import com.myproject.onideyak.onideyakapi.service.UserService;
@@ -70,7 +73,7 @@ public class UserServiceIMPL implements UserService {
             Optional<UserRole> selectedUserRole = userRoleRepo.findByRoleNameEquals("USER");
 
             if (selectedUserRole.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT);
+                throw new ConflictException("User Roles not present in database");
             }
 
             User user = new User(
@@ -98,7 +101,7 @@ public class UserServiceIMPL implements UserService {
             userRepo.save(user);*/
             return new CommonResponseDTO(200, userRequestDTO.getEmail() + " send Email.", user.getPropertyId());
         } else {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ServerErrorException(userRequestDTO.getEmail()+" not saved! Internal Server Error");
         }
     }
 
@@ -116,10 +119,8 @@ public class UserServiceIMPL implements UserService {
             userRepo.save(selectedUser.get());
             return new CommonResponseDTO(201,"Activated", null);
         } else{
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new UnauthorizedException("OTP not match");
         }
-
-        // save
 
     }
 

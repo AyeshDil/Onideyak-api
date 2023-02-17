@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping(
-            value = {"visitor/verify/{otp}"},
+            value = {"/visitor/verify/{otp}"},
             params = {"email"}
     )
     public ResponseEntity<StandardResponse> verifyUser(

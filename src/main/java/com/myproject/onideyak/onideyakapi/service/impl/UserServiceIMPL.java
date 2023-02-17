@@ -1,11 +1,13 @@
 package com.myproject.onideyak.onideyakapi.service.impl;
 
 import com.myproject.onideyak.onideyakapi.dto.request.UserRequestDTO;
+import com.myproject.onideyak.onideyakapi.dto.request.UserUpdateRequestDTO;
 import com.myproject.onideyak.onideyakapi.dto.response.CommonResponseDTO;
 import com.myproject.onideyak.onideyakapi.entity.User;
 import com.myproject.onideyak.onideyakapi.entity.UserRole;
 import com.myproject.onideyak.onideyakapi.entity.share.UserNameResource;
 import com.myproject.onideyak.onideyakapi.exception.ConflictException;
+import com.myproject.onideyak.onideyakapi.exception.NotFoundException;
 import com.myproject.onideyak.onideyakapi.exception.ServerErrorException;
 import com.myproject.onideyak.onideyakapi.exception.UnauthorizedException;
 import com.myproject.onideyak.onideyakapi.repo.UserRepo;
@@ -101,7 +103,7 @@ public class UserServiceIMPL implements UserService {
             userRepo.save(user);*/
             return new CommonResponseDTO(200, userRequestDTO.getEmail() + " send Email.", user.getPropertyId());
         } else {
-            throw new ServerErrorException(userRequestDTO.getEmail()+" not saved! Internal Server Error");
+            throw new ServerErrorException(userRequestDTO.getEmail() + " not saved! Internal Server Error");
         }
     }
 
@@ -116,12 +118,58 @@ public class UserServiceIMPL implements UserService {
         // update user enable to true
         if (selectedUser.get().getOtp().equals(otp)) {
             selectedUser.get().setEnabled(true);
+            selectedUser.get().setOtp(null);
             userRepo.save(selectedUser.get());
-            return new CommonResponseDTO(201,"Activated", null);
-        } else{
+            return new CommonResponseDTO(201, "Activated", null);
+        } else {
             throw new UnauthorizedException("OTP not match");
         }
 
+    }
+
+    @Override
+    public CommonResponseDTO updateUserDetails(UserUpdateRequestDTO userUpdateRequestDTO, String userId) {
+
+        if (userRepo.existsById(userId)) {
+            userRepo.updateUserDetails(
+                    userUpdateRequestDTO.getContactNumber(),
+                    userUpdateRequestDTO.getFirstName(),
+                    userUpdateRequestDTO.getLastName(),
+                    userUpdateRequestDTO.getPassword(),
+                    userId
+            );
+            return new CommonResponseDTO(201, "Updated", null);
+        } else {
+            throw new NotFoundException("Wrong user id");
+        }
+    }
+
+    @Override
+    public CommonResponseDTO forgotPassword(String email) {
+        // find user email in db
+        Optional<User> selectedUser = userRepo.findByEmailEquals(email);
+
+        if (selectedUser.isPresent()) {
+            // save new otp
+            selectedUser.get().setOtp(generator.generateVerificationCode());
+            userRepo.save(selectedUser.get());
+            return new CommonResponseDTO(307, "otp sent", "localhost:8000/api/v1/users/visitor/restart-password/{otp}");
+        }
+        throw new NotFoundException("Wrong Email");
+    }
+
+    @Override
+    public CommonResponseDTO restartPassword(String email, String otp, String newPassword) {
+        // find user by email
+        Optional<User> selectedUser = userRepo.findByEmailEquals(email);
+        // check whether otp same?
+        if (selectedUser.get().getOtp().equals(otp)) {
+            // change password
+            selectedUser.get().setPassword(newPassword);
+            userRepo.save(selectedUser.get());
+            return new CommonResponseDTO(308, "Logging to account by using new password", null);
+        }
+        throw new NotFoundException("Wrong Email");
     }
 
 

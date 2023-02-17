@@ -1,6 +1,7 @@
 package com.myproject.onideyak.onideyakapi.controller;
 
 import com.myproject.onideyak.onideyakapi.dto.request.UserRequestDTO;
+import com.myproject.onideyak.onideyakapi.dto.request.UserUpdateRequestDTO;
 import com.myproject.onideyak.onideyakapi.dto.response.CommonResponseDTO;
 import com.myproject.onideyak.onideyakapi.service.UserService;
 import com.myproject.onideyak.onideyakapi.util.StandardResponse;
@@ -22,7 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/visitor/register")
+    @PostMapping(value = {"/visitor/register"})
     public ResponseEntity<StandardResponse> createUser(@RequestBody UserRequestDTO userRequestDTO) throws MessagingException {
         CommonResponseDTO commonResponseDTO = userService.createUser(userRequestDTO);
         return new ResponseEntity<>(
@@ -36,8 +37,7 @@ public class UserController {
 
     @PostMapping(
             value = {"/visitor/verify/{otp}"},
-            params = {"email"}
-    )
+            params = {"email"})
     public ResponseEntity<StandardResponse> verifyUser(
             @PathVariable(value = "otp") String otp,
             @RequestParam String email
@@ -50,6 +50,51 @@ public class UserController {
                         commonResponseDTO.getData()
                 ), HttpStatus.CREATED
 
+        );
+    }
+
+    @PutMapping(value = {"/user/update"}, params = {"userId"})
+    public ResponseEntity<StandardResponse> updateUser(
+            @RequestBody UserUpdateRequestDTO userUpdateRequestDTO,
+            @RequestParam(value = "userId") String userId){
+        CommonResponseDTO commonResponseDTO = userService.updateUserDetails(userUpdateRequestDTO, userId);
+        return new ResponseEntity<>(
+                new StandardResponse(
+                        commonResponseDTO.getCode(),
+                        commonResponseDTO.getMessage(),
+                        commonResponseDTO.getData()
+                        ), HttpStatus.OK
+        );
+    }
+
+    @PutMapping(value = {"/visitor/forgot-password"},
+    params = {"email"})
+    public ResponseEntity<StandardResponse> forgotPassword(@RequestParam(value = "email") String email){
+        CommonResponseDTO commonResponseDTO = userService.forgotPassword(email);
+        return new ResponseEntity<>(
+                new StandardResponse(
+                   commonResponseDTO.getCode(),
+                        commonResponseDTO.getMessage(),
+                        commonResponseDTO.getData()
+                ), HttpStatus.TEMPORARY_REDIRECT
+        );
+    }
+
+    @PutMapping(value = {"/visitor/restart-password/{otp}"},
+            params = {"email","newPassword"}
+    )
+    public ResponseEntity<StandardResponse> restartPassword(
+            @PathVariable(value = "otp") String otp,
+            @RequestParam(value = "email") String email,
+            @RequestParam(value = "newPassword") String newPassword
+    ){
+        CommonResponseDTO commonResponseDTO = userService.restartPassword(email, otp, newPassword);
+        return new ResponseEntity<>(
+                new StandardResponse(
+                        commonResponseDTO.getCode(),
+                        commonResponseDTO.getMessage(),
+                        commonResponseDTO.getData()
+                ), HttpStatus.PERMANENT_REDIRECT
         );
     }
 

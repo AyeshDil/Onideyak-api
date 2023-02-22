@@ -30,8 +30,8 @@ public class Orders {
     @Column(name = "shipping_address", length = 750)
     private String shippingAddress;
 
-    @Column(name = "order_sate")
     @Enumerated(EnumType.STRING)
+    @Column(name = "order_state")
     private OrderState orderState;
 
     @ManyToOne

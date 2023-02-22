@@ -19,6 +19,9 @@ public class Product {
     @Column(name = "property_id", length = 200)
     private String propertyId;
 
+   /* @Column(name = "display_id", length = 200)
+    private String displayId;*/
+
     @Column(name = "display_name", length = 150)
     private String displayName;
 

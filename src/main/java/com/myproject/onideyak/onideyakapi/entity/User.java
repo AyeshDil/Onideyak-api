@@ -3,10 +3,7 @@ package com.myproject.onideyak.onideyakapi.entity;
 
 import com.myproject.onideyak.onideyakapi.entity.share.FileResource;
 import com.myproject.onideyak.onideyakapi.entity.share.UserNameResource;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,8 +12,7 @@ import java.util.Set;
 @Entity(name = "user_table")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class User {
     @Id
     @Column(name = "property_id", length = 200)
